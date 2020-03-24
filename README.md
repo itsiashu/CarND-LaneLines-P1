@@ -1,10 +1,11 @@
-# **Finding Lane Lines on the Road** 
+# Write Up Report - Finding Lane Lines on the Road
+
 [![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
 
 <img src="examples/laneLines_thirdPass.jpg" width="480" alt="Combined Image" />
 
-Overview
----
+## Overview
+
 
 When we drive, we use our eyes to decide where to go.  The lines on the road that show us where the lanes are act as our constant reference for where to steer the vehicle.  Naturally, one of the first things we would like to do in developing a self-driving car is to automatically detect lane lines using an algorithm.
 
@@ -14,43 +15,83 @@ To complete the project, two files will be submitted: a file containing project 
 
 To meet specifications in the project, take a look at the requirements in the [project rubric](https://review.udacity.com/#!/rubrics/322/view)
 
+## Required Files Overview
 
-Creating a Great Writeup
----
-For this project, a great writeup should provide a detailed response to the "Reflection" section of the [project rubric](https://review.udacity.com/#!/rubrics/322/view). There are three parts to the reflection:
+[LaneLines.ipynb](LaneLines.ipynb/): required code for processing images
 
-1. Describe the pipeline
+[images_outputf folder](images_output/): required images for represent image transfer processes
 
-2. Identify any shortcomings
+[test_videos_output folder](test_videos_output/): required videos output with calculated detected road lanes
 
-3. Suggest possible improvements
+check out at youtube [solidWhiteRight](https://www.youtube.com/watch?v=emRGHFijMzM)
 
-We encourage using images in your writeup to demonstrate how your pipeline works.  
-
-All that said, please be concise!  We're not looking for you to write a book here: just a brief description.
-
-You're not required to use markdown for your writeup.  If you use another method please just submit a pdf of your writeup. Here is a link to a [writeup template file](https://github.com/udacity/CarND-LaneLines-P1/blob/master/writeup_template.md). 
+check out at youtube [solidYellowLeft](https://www.youtube.com/watch?v=kH-5sEtoxN4)
 
 
-The Project
----
+## Find Lane Pipeline
 
-## If you have already installed the [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) you should be good to go!   If not, you should install the starter kit to get started on this project. ##
+For this project, a detailed response to the "Reflection" section of the [project rubric](https://review.udacity.com/#!/rubrics/322/view) are provided.
+There are three parts here:
 
-**Step 1:** Set up the [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) if you haven't already.
+#### Explain pipeline
 
-**Step 2:** Open the code in a Jupyter Notebook
+  I built image processing pipeline and tested with all test_images. I saved the results `test_images_output` directory, and results are inline with this write-up.
+  Tuned and Optimized various parameters, especially lower and higher thresholds for Canny edges and Hough lines params.
+  
+  some of the cv2 functions I used are:
+  
+  `cv2.fillPoly()` for regions selection  
+  
+  `cv2.line()` to draw lines on an image given endpoints  
+  
+  `cv2.addWeighted()` to coadd / overlay two images
+  
+  `cv2.cvtColor()` to grayscale or change color
+  
+  `cv2.imwrite()` to output images to file  
+  
+  `cv2.bitwise_and()` to apply a mask to an image
 
-You will complete the project code in a Jupyter notebook.  If you are unfamiliar with Jupyter Notebooks, check out [Udacity's free course on Anaconda and Jupyter Notebooks](https://classroom.udacity.com/courses/ud1111) to get started.
+#### Image Processing
 
-Jupyter is an Ipython notebook where you can run blocks of code and see results interactively.  All the code for this project is contained in a Jupyter notebook. To start Jupyter in your browser, use terminal to navigate to your project directory and then run the following command at the terminal prompt (be sure you've activated your Python 3 carnd-term1 environment as described in the [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) installation instructions!):
+Workflow is described as below:
 
-`> jupyter notebook`
+0. RGB image
 
-A browser window will appear showing the contents of the current directory.  Click on the file called "P1.ipynb".  Another browser window will appear displaying the notebook.  Follow the instructions in the notebook to complete the project.  
+![](images_output/image.png)
 
-**Step 3:** Complete the project and submit both the Ipython notebook and the project writeup
+1. convert RGB image to gray format
 
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
+![](images_output/image_gray.png)
+  
+2. get canny edges
 
+![](images_output/canny_edges.png)
+
+3. mask regional area to filter noises
+
+![](images_output/mask_region.png)
+
+4. hough_line funciton to draw lines on edge
+
+![](images_output/hough_lines.png)
+
+5. combine line with original image
+
+![](images_output/combo.png)
+
+## Reflection
+
+#### Pipeline Algorithm
+
+The algorithm developed here will work in normal road condition but not with too many changes in road conditions, such as roadside trees, construction materials, potholes etc. 
+Current logic is not very robust for most of the practical purposes and cannot be used for practical driving. But it serves as a starting point to develop one.
+ 
+#### Identify any shortcomings
+
+No shortcomings with first and second video. Optional challenge video seems tricky as it seems there are some shadows and also lanes conditions are changing. 
+It might make color filters difficult to work with this real practical one.
+
+#### Suggest possible improvements
+
+Some more of the noise removals along with better filter logic could find and work with difficult road lanes.
